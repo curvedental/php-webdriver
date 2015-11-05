@@ -1,6 +1,6 @@
 {
   "name": "curvedental/webdriver",
-  "description": "A PHP client for Selenium WebDriver forked from facebook/webdriver",
+  "description": "A PHP client for WebDriver forked from facebook/webdriver",
   "keywords": ["webdriver", "selenium", "php", "facebook"],
   "homepage": "https://github.com/curvedental/php-webdriver",
   "type": "library",
