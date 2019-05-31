@@ -54,7 +54,7 @@ class CookieTest extends TestCase
                 'value' => 'someValue',
                 'path' => '/bar',
                 'domain' => 'foo.com',
-                'expiry' => 1485388387,
+                'expire' => 1485388387,
                 'secure' => true,
                 'httpOnly' => true,
             ],
@@ -72,7 +72,7 @@ class CookieTest extends TestCase
         $this->assertSame('someValue', $cookie['value']);
         $this->assertSame('/bar', $cookie['path']);
         $this->assertSame('foo.com', $cookie['domain']);
-        $this->assertSame(1485388387, $cookie['expiry']);
+        $this->assertSame(1485388387, $cookie['expire']);
         $this->assertTrue($cookie['secure']);
         $this->assertTrue($cookie['httpOnly']);
 
@@ -102,8 +102,8 @@ class CookieTest extends TestCase
         $this->assertNull($cookie['domain']);
         $this->assertNull($cookie->getDomain());
 
-        $this->assertArrayNotHasKey('expiry', $cookie);
-        $this->assertNull($cookie['expiry']);
+        $this->assertArrayNotHasKey('expire', $cookie);
+        $this->assertNull($cookie['expire']);
         $this->assertNull($cookie->getExpiry());
 
         $this->assertArrayNotHasKey('secure', $cookie);
@@ -122,7 +122,7 @@ class CookieTest extends TestCase
             'value' => 'someValue',
             'path' => '/bar',
             'domain' => 'foo',
-            'expiry' => 1485388333,
+            'expire' => 1485388333,
             'secure' => false,
             'httpOnly' => false,
         ];
@@ -133,7 +133,7 @@ class CookieTest extends TestCase
         $this->assertSame('someValue', $cookie['value']);
         $this->assertSame('/bar', $cookie['path']);
         $this->assertSame('foo', $cookie['domain']);
-        $this->assertSame(1485388333, $cookie['expiry']);
+        $this->assertSame(1485388333, $cookie['expire']);
         $this->assertFalse($cookie['secure']);
         $this->assertFalse($cookie['httpOnly']);
     }

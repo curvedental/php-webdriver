@@ -32,7 +32,7 @@ class Cookie implements \ArrayAccess
         'value' => null,
         'path' => null,
         'domain' => null,
-        'expiry' => null,
+        'expire' => null,
         'secure' => null,
         'httpOnly' => null,
     ];
@@ -64,8 +64,8 @@ class Cookie implements \ArrayAccess
         if (isset($cookieArray['domain'])) {
             $cookie->setDomain($cookieArray['domain']);
         }
-        if (isset($cookieArray['expiry'])) {
-            $cookie->setExpiry($cookieArray['expiry']);
+        if (isset($cookieArray['expire'])) {
+            $cookie->setExpiry($cookieArray['expire']);
         }
         if (isset($cookieArray['secure'])) {
             $cookie->setSecure($cookieArray['secure']);
@@ -140,7 +140,7 @@ class Cookie implements \ArrayAccess
      */
     public function setExpiry($expiry)
     {
-        $this->cookie['expiry'] = (int) $expiry;
+        $this->cookie['expire'] = (int) $expiry;
     }
 
     /**
@@ -148,7 +148,7 @@ class Cookie implements \ArrayAccess
      */
     public function getExpiry()
     {
-        return $this->cookie['expiry'];
+        return $this->cookie['expire'];
     }
 
     /**

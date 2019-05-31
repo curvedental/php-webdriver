@@ -41,7 +41,7 @@ class WebDriverOptionsTest extends TestCase
             'value' => 'someValue',
             'path' => '/bar',
             'domain' => 'foo',
-            'expiry' => 1485388333,
+            'expire' => 1485388333,
             'secure' => false,
             'httpOnly' => false,
         ];
@@ -69,7 +69,7 @@ class WebDriverOptionsTest extends TestCase
             'value' => 'someValue',
             'path' => '/bar',
             'domain' => 'foo',
-            'expiry' => 1485388333,
+            'expire' => 1485388333,
             'secure' => false,
             'httpOnly' => false,
         ];
