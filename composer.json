@@ -34,12 +34,12 @@
   },
   "autoload": {
     "psr-4": {
-      "CurveDental\\WebDriver\\": "lib/"
+      "Facebook\\WebDriver\\": "lib/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "CurveDental\\WebDriver\\": ["tests/unit", "tests/functional"]
+      "Facebook\\WebDriver\\": ["tests/unit", "tests/functional"]
     },
     "classmap": ["tests/functional/"]
   },
