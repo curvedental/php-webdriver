@@ -87,7 +87,7 @@ class WebDriverExpectedCondition
     {
         return new static(
             function (WebDriver $driver) use ($titleRegexp) {
-                return (bool) preg_match($titleRegexp, $driver->getTitle());
+                return (bool)preg_match($titleRegexp, $driver->getTitle());
             }
         );
     }
@@ -132,7 +132,7 @@ class WebDriverExpectedCondition
     {
         return new static(
             function (WebDriver $driver) use ($urlRegexp) {
-                return (bool) preg_match($urlRegexp, $driver->getCurrentURL());
+                return (bool)preg_match($urlRegexp, $driver->getCurrentURL());
             }
         );
     }
@@ -182,9 +182,9 @@ class WebDriverExpectedCondition
         return new static(
             function (WebDriver $driver) use ($by) {
                 try {
-                    $element = $driver->findElement($by);
-
-                    return $element->isDisplayed() ? $element : null;
+//                    $element = $driver->findElement($by);
+//                    return $element->isDisplayed() ? $element : null;
+                    return self::getVisibilityOfElementLocated($driver, $by);
                 } catch (StaleElementReferenceException $e) {
                     return null;
                 }
@@ -242,10 +242,10 @@ class WebDriverExpectedCondition
      * To check exact text match use elementTextIs() condition.
      *
      * @codeCoverageIgnore
-     * @deprecated Use WebDriverExpectedCondition::elementTextContains() instead
      * @param WebDriverBy $by The locator used to find the element.
      * @param string $text The text to be presented in the element.
      * @return static Condition returns whether the text is present in the element.
+     * @deprecated Use WebDriverExpectedCondition::elementTextContains() instead
      */
     public static function textToBePresentInElement(WebDriverBy $by, $text)
     {
@@ -308,7 +308,7 @@ class WebDriverExpectedCondition
         return new static(
             function (WebDriver $driver) use ($by, $regexp) {
                 try {
-                    return (bool) preg_match($regexp, $driver->findElement($by)->getText());
+                    return (bool)preg_match($regexp, $driver->findElement($by)->getText());
                 } catch (StaleElementReferenceException $e) {
                     return null;
                 }
@@ -320,10 +320,10 @@ class WebDriverExpectedCondition
      * An expectation for checking if the given text is present in the specified elements value attribute.
      *
      * @codeCoverageIgnore
-     * @deprecated Use WebDriverExpectedCondition::elementValueContains() instead
      * @param WebDriverBy $by The locator used to find the element.
      * @param string $text The text to be presented in the element value.
      * @return static Condition returns whether the text is present in value attribute.
+     * @deprecated Use WebDriverExpectedCondition::elementValueContains() instead
      */
     public static function textToBePresentInElementValue(WebDriverBy $by, $text)
     {
@@ -383,7 +383,8 @@ class WebDriverExpectedCondition
         return new static(
             function (WebDriver $driver) use ($by) {
                 try {
-                    return !$driver->findElement($by)->isDisplayed();
+                    return !self::getVisibilityOfElementLocated($driver, $by);
+//                    return !$driver->findElement($by)->isDisplayed();
                 } catch (NoSuchElementException $e) {
                     return true;
                 } catch (StaleElementReferenceException $e) {
@@ -590,5 +591,38 @@ class WebDriverExpectedCondition
                 return !$result;
             }
         );
+    }
+
+    public static function getVisibilityOfElementLocated(WebDriver $driver, WebDriverBy $by)
+    {
+        $xpath = $by->getValue();
+        //Replace internal double quotes so the javascript string doesn't get segmented.
+        $escapedXpath = str_replace("\"", "'", $xpath);
+        $string = sprintf("function isVisible() {
+            elem = document.evaluate(\"%s\", document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+            const style = getComputedStyle(elem);
+            if (style.display === 'none') return false;
+            if (style.visibility !== 'visible') return false;
+            if (style.opacity < 0.1) return false;
+            if (elem.offsetWidth + elem.offsetHeight + elem.getBoundingClientRect().height +
+                elem.getBoundingClientRect().width === 0) {
+                return false;
+            }
+            const elemCenter   = {
+                x: elem.getBoundingClientRect().left + elem.offsetWidth / 2,
+                y: elem.getBoundingClientRect().top + elem.offsetHeight / 2
+            };
+            if (elemCenter.x < 0) return false;
+            if (elemCenter.x > (document.documentElement.clientWidth || window.innerWidth)) return false;
+            if (elemCenter.y < 0) return false;
+            if (elemCenter.y > (document.documentElement.clientHeight || window.innerHeight)) return false;
+            let pointContainer = document.elementFromPoint(elemCenter.x, elemCenter.y);
+            do {
+                if (pointContainer === elem) return true;
+            } while (pointContainer = pointContainer.parentNode);
+            return false;
+            }", $escapedXpath);
+        $result = $driver->executeScript("return ($string).apply();");
+        return $result;
     }
 }
